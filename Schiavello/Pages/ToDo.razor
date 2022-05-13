@@ -1,0 +1,169 @@
+﻿@page "/todo"
+
+@using Schiavello.Data
+@using System
+@using System.Collections.Generic
+@inject ListServices service
+
+<div class="container">
+
+    <div class="row bg-light">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    @*<th>List Id</th>*@
+                    <th></th>
+                    <th>Tasks</th>
+                    <th>Status <button @onclick="(() => SortList())">Sort</button></th>
+                    <th>Actions</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (Lists.Any())
+                {
+                    @*@foreach (var List in Lists.OrderBy(a => a.Status))*@
+                    @foreach (var List in Lists)
+                    {
+                        <tr>
+                            @*<td>@List.Id</td>*@
+                            <td>
+                                @if (List.Status != "Completed")
+                                {
+                                    <input type="checkbox" @onclick="(() => CompleteList(List))" />
+                                }
+                            </td>
+
+                            <td>
+                                @List.Name
+                            </td>
+                            <td>@List.Status</td>
+                            <td>
+                                <button class="btn btn-danger" @onclick="(() => DeleteList(List))">&times;</button>
+                                @if (List.Status != "Completed")
+                                {
+                                    <button class="btn btn-primary" @onclick="(() => SetListForUpdate(List))">Update</button>
+
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="6"><strong>Add tasks</strong></td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row m-5">
+        <div class="col-5 bg-light m-2 justify-content-start">
+
+            <div class="p-3 mb-3 bg-primary text-white text-center">Add Task</div>
+
+            <EditForm Model="@NewList">
+                <div class="form-group">
+                    <label for="name">Task</label>
+                    <input type="text" id="name" class="form-control" @bind-value="@NewList.Name" />
+                    <input type="text" hidden id="status" class="form-control" value="Active" />
+
+                </div>
+
+                @*<div class="form-group">
+                        <label for="price">Price</label>
+                        <input type="text" id="price" class="form-control" @bind="@NewList.Status" />
+                    </div>*@
+
+
+
+                <div class="text-center p-3 mb-3">
+                    <button class="btn btn-info" @onclick="AddNewList"> Add</button>
+                </div>
+            </EditForm>
+        </div>
+
+        <div class="col-5 bg-light m-2 justify-content-end">
+            <div class="p-3 mb-3 bg-primary text-white text-center">Update Task</div>
+
+            <EditForm Model="@UpdateList">
+                <div class="form-group">
+                    <label for="name">Task</label>
+                    <input type="text" id="name" class="form-control" @bind-value="@UpdateList.Name" />
+                </div>
+
+                <div class="text-center p-3 mb-3">
+                    <button class="btn btn-info" @onclick="UpdateListData"> Update List</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+
+
+</div>
+
+
+@code {
+
+    List<List> Lists = new List<List>();
+
+    Boolean Sort;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshLists();
+    }
+
+    private async Task RefreshLists()
+    {
+        Lists = await service.GetListAsync();
+    }
+
+    private async Task RefreshListsSorted(Boolean Sort)
+    {
+        Lists = await service.SortListAsync(Sort);
+
+    }
+
+    private async Task SortList()
+    {
+        //await service.RefreshListsSorted(Sort);
+
+        await RefreshListsSorted(Sort);
+        Sort = Sort == true ? false : true;
+    }
+
+
+    public List NewList { get; set; } = new List();
+
+    private async Task AddNewList()
+    {
+        await service.AddListAsync(NewList);
+        NewList = new List();
+        await RefreshLists();
+    }
+
+    List UpdateList = new List();
+    private void SetListForUpdate(List List)
+    {
+        UpdateList = List;
+    }
+
+    private async Task UpdateListData()
+    {
+        await service.UpdateListAsync(UpdateList);
+        await RefreshLists();
+    }
+
+    private async Task DeleteList(List List)
+    {
+        await service.DeleteListAsync(List);
+        await RefreshLists();
+    }
+
+    private async Task CompleteList(List List)
+    {
+        await service.CompleteListAsync(List);
+        await RefreshLists();
+    }
+}

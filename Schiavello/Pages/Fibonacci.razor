@@ -1,0 +1,42 @@
+﻿@page "/fibonacci"
+
+<h1>Fibonacci</h1>
+
+<h3>Current count: @next</h3>
+
+<button class="btn btn-primary" @onclick="DecrementCount">- Decrease</button> <button class="btn btn-primary" @onclick="IncrementCount">+ Increase</button>
+
+@code {
+    private int next = 0, prev = 0;
+
+    private void IncrementCount()
+    {
+        if(next == 0)
+        {
+            next = 1;
+        }
+        else
+        {
+            int temp = next;
+            next = next + prev;
+            prev = temp;
+        }
+    }
+    private void DecrementCount()
+    {
+        int temp = next;
+        next = prev;
+        prev = temp - prev;
+
+        //if(next == 0)
+        //{
+        //    next = -1;
+        //}
+        //else
+        //{
+        //    int temp = prev;
+        //    next = next - prev;
+        //    prev = temp;
+        //}
+    }
+}
