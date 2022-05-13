@@ -87,3 +87,4 @@ C:\Users\Xceler8\source\repos\Schiavello\Schiavello\bin\Debug\netcoreapp3.1\runt
 C:\Users\Xceler8\source\repos\Schiavello\Schiavello\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\Xceler8\source\repos\Schiavello\Schiavello\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\Xceler8\source\repos\Schiavello\Schiavello\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\e_sqlite3.dll
+C:\Users\Xceler8\source\repos\Schiavello\Schiavello\obj\Debug\netcoreapp3.1\Schiavello.csproj.AssemblyReference.cache
